@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed to Circuit - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary-green: #2C5C2F;
+            --secondary-green: #3A7D44;
+            --accent-yellow: #FFD700;
+            --text-dark: #333333;
+            --text-light: #FFFFFF;
+            --background-light: #F9FBF8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: var(--text-light);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+        }
+
+        .login-container input {
+            width: 100%;
+            padding: 0.8rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-container button {
+            background: var(--accent-yellow);
+            color: var(--text-dark);
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .login-container button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .login-container p {
+            margin-top: 1rem;
+        }
+
+        .login-container a {
+            color: var(--primary-green);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success Message */
+        .success-message {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Container -->
+    <div class="login-container">
+        <h1>Welcome to Seed to Circuit</h1>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p>Don't have an account? <a href="#" onclick="showSignup()">Sign Up</a></p>
+
+        <!-- Success Message (Hidden by Default) -->
+        <p class="success-message" id="successMessage" style="display: none;">Login successful! Redirecting...</p>
+    </div>
+
+    <!-- Signup Container (Hidden by Default) -->
+    <div class="login-container" id="signupContainer" style="display: none;">
+        <h1>Create an Account</h1>
+        <input type="text" id="signupUsername" placeholder="Username">
+        <input type="password" id="signupPassword" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+        <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Simulated user database (using localStorage)
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+
+        // Show Signup Form
+        function showSignup() {
+            document.querySelector('.login-container').style.display = 'none';
+            document.getElementById('signupContainer').style.display = 'block';
+        }
+
+        // Show Login Form
+        function showLogin() {
+            document.querySelector('.login-container').style.display = 'block';
+            document.getElementById('signupContainer').style.display = 'none';
+        }
+
+        // Sign Up Function
+        function signup() {
+            const username = document.getElementById('signupUsername').value;
+            const password = document.getElementById('signupPassword').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            // Check if user already exists
+            const userExists = users.some(user => user.username === username);
+            if (userExists) {
+                alert('Username already exists!');
+                return;
+            }
+
+            // Add new user
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+            alert('Account created successfully! Please login.');
+            showLogin();
+        }
+
+        // Login Function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if (!username || !password) {
+                alert('Please fill in all fields!');
+                return;
+            }
+
+            // Check if user exists
+            const user = users.find(user => user.username === username && user.password === password);
+            if (user) {
+                localStorage.setItem('currentUser', JSON.stringify(user));
+
+                // Show success message
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+
+                // Redirect to main.html after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'main.html';
+                }, 2000); // 2 seconds delay
+            } else {
+                alert('Invalid username or password!');
+            }
+        }
+    </script>
+</body>
+</html>
